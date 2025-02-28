@@ -25,10 +25,7 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId, 
       ref: "User", 
       default: null,
-      // required: function () { 
-      //   return this.role === "student"; 
-      // } 
-    }, // Assigned guide (Only for students)
+    }, 
     department: { 
       type: String, 
       required: function () { 

@@ -4,7 +4,6 @@ import User from '../models/User.js'
 import path from 'path'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import authMidlleware from '../middleware/authMiddleware.js'
 import { body, validationResult } from "express-validator";
 
 dotenv.config({ path: path.resolve("../.env") });
@@ -83,12 +82,13 @@ router.post("/login",
       // Generate JWT token
       const token = jwt.sign(
         { 
+          name:user.name,
           userId: user._id,
+          email:user.email,
           role: user.role,
           guideId: user.guideId || null, 
-        },JWT_SECRET, { expiresIn: "1h" }
+        },JWT_SECRET, // { expiresIn: "1h" }
       );
-  
       res.json({ message: "Login successful", token });
     } catch (err) {
       res.status(500).json({ error: "Server error" });
@@ -101,7 +101,5 @@ router.post("/login",
 //         user:req.user  //user details from token 
 //     })
 // })
-
-
 
 export default router;

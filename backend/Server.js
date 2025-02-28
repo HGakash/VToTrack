@@ -7,7 +7,8 @@ import cors from 'cors'
 import projectSubmission from './routes/projectSubmission.js'
 import projectRoute from './routes/projectRoute.js'
 import guideRequestRoute from './routes/guideRequestRoute.js'
-import similarityRoute from './routes/similarityRoute.js'
+import similarityRoute from './routes/similarityRoute.js';
+import getUserRoute from './routes/getUserRoute.js';
 
 const app = express();
 
@@ -28,6 +29,8 @@ app.use('/api/guide',guideRequestRoute ); // route for requesting guide to take 
 app.use("/uploads", express.static("uploads")); //to upload pdf
 
 app.use('/api/similar',similarityRoute); //to check the similarit of the project 
+
+app.use('/api/getuser',getUserRoute);// to fetch user based on theier roles
 
 const URI = process.env.MONGO_URI
 const PORT = process.env.PORT

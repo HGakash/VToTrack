@@ -23,21 +23,18 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-  console.log("first");
     try {
       if (req.user.role !== "student") {
         return res.status(403).json({ error: "Only students can create projects" });
       }
-      console.log("second");
 
       // Check if student already has a project
-      const existingProject = await Project.findOne({ studentId: req.user.userId });
-      if (existingProject) {
+      const existingProject = await Project.find({ studentId: req.user.userId });
+      if (existingProject.length>2) {
         return res.status(400).json({ error: "Project already exists for this student" });
       }
-      console.log("third");
 
-      const { title,description,milestones} = req.body;
+      const { title,category,description,milestones} = req.body;
 
   console.log("four");
 
@@ -46,6 +43,7 @@ router.post(
         guideId: req.user.guideId, 
         title,
         description,
+        category,
         milestones
       });
   console.log("five");
@@ -100,6 +98,7 @@ router.put(
       }
 
       // Update fields if provided
+      if (req.body.title) project.title = req.body.title;
       if (req.body.description) project.description = req.body.description;
       if (req.body.milestones) project.milestones = req.body.milestones;
 

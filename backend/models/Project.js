@@ -1,28 +1,29 @@
 import mongoose from "mongoose";
 
 const ProjectSchema = new mongoose.Schema({
-    studentId: 
-    { 
+    studentId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User", 
         required: true 
     },
-    guideId: 
-    { 
+    guideId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User", 
-        required: false,  //make it falls for now 
-        default:null // change this later to true 
+        required: false,  
+        default: null 
     },
-    title: 
-    { 
+    title: { 
         type: String, 
         required: true 
     },
-    description: 
-        {
-         type: String 
-        },
+    category: { 
+        type: String, 
+        enum: ["Societal Project", "Main Project"], 
+        required: true 
+    },
+    description: { 
+        type: String 
+    },
     milestones: [
       { 
         name: String, 
@@ -31,12 +32,9 @@ const ProjectSchema = new mongoose.Schema({
         enum: ["pending", "completed"], 
         default: "pending" 
        } 
-   }
+      }
     ],
-  });
-  
-  const Project = mongoose.model("Project", ProjectSchema);
-  export default Project  
+});
 
-
-
+const Project = mongoose.model("Project", ProjectSchema);
+export default Project;

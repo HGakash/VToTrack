@@ -20,7 +20,7 @@ const SubmissionSchema = new mongoose.Schema({
   
   projectTitle: 
   { 
-    type: String, 
+    type: String,     
     required: true 
   }, // Added: Project Title for reference
   abstract: 
@@ -63,6 +63,5 @@ const SubmissionSchema = new mongoose.Schema({
 
 const Submission = mongoose.model("Submission", SubmissionSchema);
 export default Submission
-
 
 
