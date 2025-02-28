@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import StudentDashboard from "./pages/StudentDashboard";
 import GuideDashboard from "./pages/GuideDashboard";
-// import SubmitProject from "./pages/SubmitProject";
+import SubmitProject from "./pages/SubmitProject";
 import CreateProject from "./pages/CreateProject";
 
 export default function App() {
@@ -17,7 +17,7 @@ export default function App() {
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/create-project" element={<CreateProject/>}></Route>
-          {/* <Route path="/submit-project" element={<SubmitProject/>}></Route> */}
+          <Route path="/submit-project" element={<SubmitProject/>}></Route>
           <Route
           path="/studentDashboard"
           element={
@@ -35,14 +35,5 @@ export default function App() {
     </AuthProvider>
   );
 }
-
-
-
-
-
-
-
-
-
 
 

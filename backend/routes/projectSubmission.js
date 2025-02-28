@@ -13,8 +13,6 @@ router.post(
   authMiddleware,
   upload.single("file"), // Middleware to handle file upload
   [
-    body("projectTitle").notEmpty().withMessage("Project Title is required"),
-    body("abstract").notEmpty().withMessage("Abstract is required"),
     body("fileType").isIn(["synopsis", "presentation", "report", "code"]).withMessage("Invalid file type"),
   ],
   async (req, res) => {
@@ -45,14 +43,12 @@ router.post(
         return res.status(400).json({ error: "No active project found" });
       }
 
-      const { projectTitle, abstract, fileType, feedback } = req.body;
+      const {fileType, feedback } = req.body;
 
       const newSubmission = new Submission({
         projectId: project._id,
         studentId: req.user.userId,
         guideId: guideRequest.guideId, // Get guideId from the approved request
-        projectTitle,
-        abstract,
         fileType,
         fileUrl: req.file ? `/uploads/${req.file.filename}` : null, // Store file path
         feedback,

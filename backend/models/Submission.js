@@ -17,18 +17,6 @@ const SubmissionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: "User", required: true 
   },
-  
-  projectTitle: 
-  { 
-    type: String,     
-    required: true 
-  }, // Added: Project Title for reference
-  abstract: 
-  { 
-    type: String, 
-    required: true 
-  }, // Added: Small abstract for topic clarity
-
   fileType: 
   { 
     type: String, 
