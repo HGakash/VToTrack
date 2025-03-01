@@ -1,134 +1,79 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {Input} from "@/components/ui/input"
+import { useDropzone } from "react-dropzone";
 
-const SubmitDocs = () => {
-  const [project, setProject] = useState(null);
-  const [submissions, setSubmissions] = useState([]);
-  const [file, setFile] = useState(null);
-  const [fileType, setFileType] = useState("synopsis");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-
-//   useEffect(() => {
-//     fetchProjectDetails();
-//     fetchSubmissions();
-//   }, []);
-
-  const fetchProjectDetails = async () => {
-    try {
-      const res = await axios.get("/api/projects/student");
-      setProject(res.data);
-    } catch (err) {
-      console.error("Error fetching project:", err);
-    }
+const FileUpload = ({ title, file, setFile }) => {
+  const onDrop = (acceptedFiles) => {
+    setFile(acceptedFiles[0]);
   };
 
-  const fetchSubmissions = async () => {
-    try {
-      const res = await axios.get("/api/submissions");
-      setSubmissions(res.data);
-    } catch (err) {
-      console.error("Error fetching submissions:", err);
-    }
-  };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) return alert("Please select a file!");
-
-    setLoading(true);
-    setMessage("");
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("fileType", fileType);
-
-    try {
-      const res = await axios.post("/api/submissions/submit", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      setMessage(res.data.message);
-      fetchSubmissions();
-    } catch (err) {
-      console.error("Error uploading file:", err);
-      setMessage("Upload failed. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="bg-gray-800 text-white p-8 rounded-xl shadow-lg w-full max-w-lg">
-        {/* Project Details */}
-        {project ? (
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-blue-400">{project.title}</h2>
-            <p className="text-gray-300">{project.description}</p>
-            <p className="text-sm text-gray-400">Category: {project.category}</p>
+    <Card className="w-full p-4">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div
+          {...getRootProps()}
+          className="border-dashed border-2 border-gray-400 p-6 text-center cursor-pointer rounded-lg"
+        >
+          <input {...getInputProps()} />
+          <p className="text-gray-600">Drag & drop file here or click to browse</p>
+        </div>
+        {file && (
+          <div className="mt-2">
+            <p className="text-green-600 text-sm">Uploaded: {file.name}</p>
+            <Button variant="link" onClick={() => window.open(URL.createObjectURL(file))}>
+              View File
+            </Button>
           </div>
-        ) : (
-          <p className="text-gray-400">Loading project details...</p>
         )}
+      </CardContent>
+    </Card>
+  );
+};
 
-        {/* Previous Submissions */}
-        <h3 className="text-lg font-semibold mb-2">Previous Submissions</h3>
-        <ul className="bg-gray-700 p-4 rounded-md shadow">
-          {submissions.length > 0 ? (
-            submissions.map((sub) => (
-              <li key={sub._id} className="flex justify-between items-center border-b border-gray-600 py-2">
-                <span className="text-gray-300">{sub.fileType.toUpperCase()}</span>
-                <span
-                  className={`px-2 py-1 rounded text-white ${
-                    sub.status === "approved" ? "bg-green-500" : sub.status === "pending" ? "bg-yellow-500" : "bg-red-500"
-                  }`}
-                >
-                  {sub.status}
-                </span>
-              </li>
-            ))
-          ) : (
-            <p className="text-gray-400">No submissions yet.</p>
-          )}
-        </ul>
+const ProjectCard = ({ title, category, description }) => {
+  const [synopsisFile, setSynopsisFile] = useState(null);
+  const [reportFile, setReportFile] = useState(null);
 
-        {/* Upload Form */}
-        <h3 className="text-lg font-semibold mt-6 mb-2">Upload New Submission</h3>
-        <form onSubmit={handleSubmit} className="bg-gray-700 p-4 rounded-md shadow">
-          <div className="mb-4">
-            <label className="block text-gray-300">Select File Type:</label>
-            <select
-              className="w-full p-2 border border-gray-600 bg-gray-800 text-white rounded"
-              value={fileType}
-              onChange={(e) => setFileType(e.target.value)}
-            >
-              <option value="synopsis">Synopsis</option>
-              <option value="presentation">Presentation</option>
-              <option value="report">Report</option>
-              <option value="code">Code</option>
-            </select>
-          </div>
+  return (
+    <Card className="w-full max-w-5xl mx-auto mb-6 shadow-lg">
+      <CardHeader>
+        <CardTitle className="text-2xl">{title}</CardTitle>
+        <p className="text-gray-600">{description}</p>
+        <p className="text-sm text-blue-600">Category: {category}</p>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-4">
+          <FileUpload title="Project Synopsis" file={synopsisFile} setFile={setSynopsisFile} />
+          <FileUpload title="Project Report" file={reportFile} setFile={setReportFile} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
-          <div className="mb-4">
-            <label className="block text-gray-300">Upload File:</label>
-            <input type="file" className="w-full p-2 border border-gray-600 rounded bg-gray-800 text-white" onChange={handleFileChange} />
-          </div>
+const SubmitProject = () => {
+  const projects = [
+    { title: "AI Chatbot", category: "Machine Learning", description: "An AI chatbot project using NLP and Python." },
+    { title: "E-Commerce Website", category: "Web Development", description: "A full-stack e-commerce website using React and Node.js." }
+  ];
 
-          <button type="submit" className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" disabled={loading}>
-            {loading ? "Uploading..." : "Submit"}
-          </button>
-        </form>
-
-        {/* Message Display */}
-        {message && <p className="mt-4 text-center text-green-400">{message}</p>}
+  return (
+    <div className="p-12 bg-gray-100 min-h-screen flex flex-col items-center">
+      <h1 className="text-4xl font-bold text-center mb-10">Project Submissions</h1>
+      <div className="w-full max-w-6xl">
+        {projects.map((project, index) => (
+          <ProjectCard key={index} {...project} />
+        ))}
       </div>
     </div>
   );
 };
 
-export default SubmitDocs;
+export default SubmitProject;

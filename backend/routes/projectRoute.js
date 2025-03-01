@@ -65,11 +65,11 @@ console.log("six");
  */
 router.get("/my-project", authMiddleware, async (req, res) => {
   try {
-    const project = await Project.findOne({ studentId: req.user.userId });
-    if (!project) {
+    const projects = await Project.find({ studentId: req.user.userId });  //modefied wait
+    if (!projects) {
       return res.status(404).json({ error: "No project found" });
     }
-    res.json(project);
+    res.json(projects);
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }

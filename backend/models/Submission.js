@@ -28,7 +28,6 @@ const SubmissionSchema = new mongoose.Schema({
     type: String, 
     required: true,
   }, // Cloud storage URL
-  
   submittedAt: 
   { 
     type: Date, 
